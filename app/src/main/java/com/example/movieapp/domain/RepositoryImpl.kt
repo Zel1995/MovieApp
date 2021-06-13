@@ -4,6 +4,7 @@ import android.os.Handler
 import android.os.Looper
 import com.example.movieapp.R
 import java.util.concurrent.Executor
+import kotlin.random.Random
 
 class RepositoryImpl : Repository {
     private val handler: Handler = Handler(Looper.getMainLooper())
@@ -12,7 +13,7 @@ class RepositoryImpl : Repository {
         callback: (result: RepositoryResult<List<Movie>>) -> Unit
     ) {
         executor.execute {
-            val isOk = true
+            val isOk = Random.nextBoolean()
             if (isOk) {
 
                 val result = listOf<Movie>(

@@ -4,11 +4,11 @@ import androidx.fragment.app.FragmentManager
 import com.example.movieapp.R
 import com.example.movieapp.domain.Movie
 import com.example.movieapp.ui.detils.MovieFragment
-import com.example.movieapp.ui.list.MainFragment
+import com.example.movieapp.ui.list.MovieListFragment
 
 class MainRouter(private val supportFragmentManager: FragmentManager) {
-    fun openMainFragment() {
-        supportFragmentManager.beginTransaction().replace(R.id.main_container, MainFragment())
+    fun openMovieListFragment() {
+        supportFragmentManager.beginTransaction().replace(R.id.main_container, MovieListFragment())
             .commit()
     }
 

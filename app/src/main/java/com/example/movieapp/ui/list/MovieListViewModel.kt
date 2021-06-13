@@ -1,5 +1,6 @@
 package com.example.movieapp.ui.list
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,8 +11,10 @@ import com.example.movieapp.domain.Success
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
-class MainViewModel : ViewModel() {
-    private val repository: RepositoryImpl = RepositoryImpl()
+class MovieListViewModel(
+    private val application: Application,
+    private val repository: RepositoryImpl
+) : ViewModel() {
     private val executor: Executor = Executors.newSingleThreadExecutor()
 
     private val _movieLiveDada = MutableLiveData<List<Movie>>()
@@ -24,7 +27,7 @@ class MainViewModel : ViewModel() {
 
     fun fetchMovies() {
         _loadingLiveDada.value = true
-        repository.getMovies(executor, { it ->
+        repository.getMovies(executor, {
             when (it) {
                 is Success -> {
                     val result: List<Movie> = it.value
@@ -34,7 +37,12 @@ class MainViewModel : ViewModel() {
                     _errorLiveDada.value = it.value.stackTraceToString()
                 }
             }
+            _loadingLiveDada.value = false
         })
     }
 
+    override fun onCleared() {
+
+        super.onCleared()
+    }
 }
