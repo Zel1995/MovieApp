@@ -1,4 +1,4 @@
 package com.example.movieapp.domain
 
-class MovieCategory {
+data class MovieCategory(val name: String, val movies: List<Movie>) {
 }

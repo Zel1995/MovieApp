@@ -15,7 +15,7 @@ class MainRouter(private val supportFragmentManager: FragmentManager) {
     fun openMovieFragmentByMovie(movie: Movie) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_container, MovieFragment.newInstance(movie))
-            .addToBackStack(movie.content)
+            .addToBackStack(movie.name)
             .commit()
     }
 }

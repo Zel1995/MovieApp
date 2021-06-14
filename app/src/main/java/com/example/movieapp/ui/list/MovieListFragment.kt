@@ -8,13 +8,13 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.movieapp.R
 import com.example.movieapp.databinding.FragmentMovieListBinding
 import com.example.movieapp.di.App
 import com.example.movieapp.domain.RepositoryImpl
 import com.example.movieapp.domain.router.RouterHolder
+import com.example.movieapp.snack
 import javax.inject.Inject
 
 class MovieListFragment : Fragment(R.layout.fragment_movie_list) {
@@ -25,6 +25,7 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list) {
         }
 
     private lateinit var viewModel: MovieListViewModel
+
     @Inject
     lateinit var factory: MovieListViewModelFactory
 
@@ -34,12 +35,17 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list) {
         viewBinding = FragmentMovieListBinding.bind(view)
         initRecyclerView()
         initViewModel()
+        initFab()
         viewModel.fetchMovies()
         viewBinding?.swipeRefresh?.setOnRefreshListener {
             viewModel.fetchMovies()
             viewBinding?.swipeRefresh?.isRefreshing = false
         }
 
+    }
+
+    private fun initFab() {
+        viewBinding?.fab?.snack(R.string.fab_clicked)
     }
 
     private fun initRecyclerView() {

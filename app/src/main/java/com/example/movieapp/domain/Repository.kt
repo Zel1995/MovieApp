@@ -1,7 +1,10 @@
 package com.example.movieapp.domain
 
-import java.util.concurrent.Executor
+import java.util.concurrent.ExecutorService
 
 interface Repository {
-    fun getMovies(executor: Executor, callback: (result: RepositoryResult<List<Movie>>) -> Unit)
+    fun getMovies(
+        executor: ExecutorService,
+        callback: (result: RepositoryResult<List<MovieCategory>>) -> Unit
+    )
 }

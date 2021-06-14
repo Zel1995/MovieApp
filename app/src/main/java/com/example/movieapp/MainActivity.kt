@@ -18,8 +18,9 @@ class MainActivity : AppCompatActivity(R.layout.main_activity), RouterHolder,
     private val mainRouter: MainRouter = MainRouter(supportFragmentManager)
     override val router: MainRouter
         get() = mainRouter
+
     @Inject
-    lateinit var repository:RepositoryImpl
+    lateinit var repository: RepositoryImpl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
