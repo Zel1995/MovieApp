@@ -8,4 +8,9 @@
     <string name="content">film content</string>
     <string name="title">Title</string>
     <string name="hello">hello</string>
+    <string name="tools_content">После теракта в киевском оперном театре агент ЦРУ объединяется с британской разведкой, чтобы противостоять русскому олигарху, который сколотил состояние на торговле оружием.</string>
+    <string name="list_title">Movies list</string>
+    <string name="movie_info">Movie Info</string>
+    <string name="fab_clicked">Floating Action Button clicked</string>
+    <string name="movie">Movie</string>
 </resources>

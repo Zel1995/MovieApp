@@ -17,7 +17,7 @@ class MovieFragment : Fragment(R.layout.fragment_movie) {
         fun newInstance(movie: Movie) =
             MovieFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable(ARG_MOVIE, movie)
+                    putParcelable(ARG_MOVIE, movie)
                 }
             }
     }
@@ -25,7 +25,7 @@ class MovieFragment : Fragment(R.layout.fragment_movie) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            movie = it.getSerializable(ARG_MOVIE) as Movie?
+            movie = it.getParcelable(ARG_MOVIE) as Movie?
         }
     }
 
