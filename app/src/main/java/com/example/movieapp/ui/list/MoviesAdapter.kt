@@ -6,11 +6,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.movieapp.R
 import com.example.movieapp.domain.Movie
 
 class MoviesAdapter(private val movies: List<Movie>, val itemClicked: (movie: Movie) -> Unit) :
     RecyclerView.Adapter<MoviesAdapter.MovieViewHolder>() {
+    companion object {
+        private const val BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original"
+    }
 
 
     override fun onCreateViewHolder(
@@ -25,8 +30,14 @@ class MoviesAdapter(private val movies: List<Movie>, val itemClicked: (movie: Mo
     override fun onBindViewHolder(holder: MoviesAdapter.MovieViewHolder, position: Int) {
         val item = movies[position]
         with(holder) {
-            title.text = item.name
-            imgIcon.setImageResource(item.imgRes)
+            title.text = item.title
+            Glide.with(imgIcon)
+                .load(BASE_IMAGE_URL + item.posterPath)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .fitCenter()
+                .error(R.drawable.ic_home)
+                .centerInside()
+                .into(imgIcon)
         }
     }
 
@@ -38,9 +49,6 @@ class MoviesAdapter(private val movies: List<Movie>, val itemClicked: (movie: Mo
 
         init {
             itemView.setOnClickListener { itemClicked(movies[adapterPosition]) }
-        }
-
-
         }
     }
 }
