@@ -28,7 +28,8 @@ class MovieCategoryAdapter(private val itemClicked: ItemClicked) :
         notifyDataSetChanged()
         result.dispatchUpdatesTo(this)
     }
-    fun clearData(){
+
+    fun clearData() {
         data.clear()
         notifyDataSetChanged()
     }

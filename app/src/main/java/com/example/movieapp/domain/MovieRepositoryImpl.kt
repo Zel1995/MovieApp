@@ -12,6 +12,12 @@ import javax.net.ssl.HttpsURLConnection
 object MovieRepositoryImpl : Repository {
     private const val BASE_CATEGORY_URL =
         "https://api.themoviedb.org/3/movie/%s?api_key=${BuildConfig.TMDB_KEY}&%s"
+    private const val REQUEST_LANGUAGE = "language=ru"
+    const val CATEGORY_POPULAR = "popular"
+    const val CATEGORY_TOP_RATED = "top_rated"
+    const val CATEGORY_NOW_PLAYING = "now_playing"
+    const val CATEGORY_UPCOMING = "upcoming"
+
     private val handler: Handler = Handler(Looper.getMainLooper())
     override fun getMovies(
         executor: ExecutorService,
@@ -20,10 +26,10 @@ object MovieRepositoryImpl : Repository {
         executor.execute {
             try {
                 val result = listOf(
-                    loadMoviesCategory("popular"),
-                    loadMoviesCategory("top_rated"),
-                    loadMoviesCategory("now_playing"),
-                    loadMoviesCategory("upcoming"),
+                    loadMoviesCategory(CATEGORY_POPULAR),
+                    loadMoviesCategory(CATEGORY_TOP_RATED),
+                    loadMoviesCategory(CATEGORY_NOW_PLAYING),
+                    loadMoviesCategory(CATEGORY_UPCOMING),
                 )
                 handler.post {
                     callback(Success(result))
@@ -36,8 +42,22 @@ object MovieRepositoryImpl : Repository {
         }
     }
 
+    override fun getMovies(): RepositoryResult<List<MovieCategory>> {
+        try {
+            val result = listOf(
+                loadMoviesCategory(CATEGORY_POPULAR),
+                loadMoviesCategory(CATEGORY_TOP_RATED),
+                loadMoviesCategory(CATEGORY_NOW_PLAYING),
+                loadMoviesCategory(CATEGORY_UPCOMING),
+            )
+            return Success(result)
+        } catch (e: Exception) {
+            return Error(e)
+        }
+    }
+
     private fun loadMoviesCategory(category: String): MovieCategory {
-        val url = URL(String.format(BASE_CATEGORY_URL, category, "language=ru"))
+        val url = URL(String.format(BASE_CATEGORY_URL, category, REQUEST_LANGUAGE))
         val connection = url.openConnection() as HttpsURLConnection
         val gson = Gson()
         with(connection) {

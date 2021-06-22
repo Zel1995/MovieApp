@@ -1,12 +1,14 @@
 package com.example.movieapp
 
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.movieapp.R.string.hello
 import com.example.movieapp.di.App
-import com.example.movieapp.domain.MovieRepositoryImpl
+import com.example.movieapp.domain.AirplaneModeReceiver
 import com.example.movieapp.domain.router.MainRouter
 import com.example.movieapp.ui.MainActivityModule
 import com.example.movieapp.ui.MainSubcomponent
@@ -17,7 +19,7 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
     BottomNavigationView.OnNavigationItemSelectedListener {
     @Inject
     lateinit var router: MainRouter
-
+    private lateinit var receiver: AirplaneModeReceiver
     var mainSubcomponent: MainSubcomponent? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +47,18 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
             }
         }
         return true
+    }
+
+    override fun onStart() {
+        super.onStart()
+        receiver = AirplaneModeReceiver()
+        registerReceiver(receiver, IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED))
+
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unregisterReceiver(receiver)
     }
 
     override fun onDestroy() {

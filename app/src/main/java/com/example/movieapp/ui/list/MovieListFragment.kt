@@ -2,18 +2,21 @@ package com.example.movieapp.ui.list
 
 import android.app.Application
 import android.content.Context
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.movieapp.MainActivity
 import com.example.movieapp.R
 import com.example.movieapp.databinding.FragmentMovieListBinding
 import com.example.movieapp.domain.MovieRepositoryImpl
 import com.example.movieapp.domain.router.MainRouter
+import com.example.movieapp.domain.serviceRequest.CatchMovieService
 import com.example.movieapp.snack
 import javax.inject.Inject
 
@@ -77,6 +80,20 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list) {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         (context as? MainActivity)?.mainSubcomponent?.inject(this)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+            viewModel.MovieResultReceiver(),
+            IntentFilter(CatchMovieService.SERVICE_ACTION)
+        )
+    }
+
+    override fun onStop() {
+        super.onStop()
+        LocalBroadcastManager.getInstance(requireContext())
+            .unregisterReceiver(viewModel.MovieResultReceiver())
     }
 }
 

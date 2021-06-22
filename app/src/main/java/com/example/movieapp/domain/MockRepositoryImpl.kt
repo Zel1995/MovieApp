@@ -4,6 +4,7 @@ import android.os.Handler
 import android.os.Looper
 import java.util.concurrent.ExecutorService
 import kotlin.random.Random
+
 @Deprecated("this repository just for test without internet")
 class MockRepositoryImpl : Repository {
     private val handler: Handler = Handler(Looper.getMainLooper())
@@ -128,6 +129,10 @@ class MockRepositoryImpl : Repository {
             }
         }
 
+    }
+
+    override fun getMovies(): RepositoryResult<List<MovieCategory>> {
+        return Success(listOf())
     }
 }
 
