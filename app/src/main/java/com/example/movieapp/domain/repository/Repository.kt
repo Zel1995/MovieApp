@@ -1,5 +1,7 @@
-package com.example.movieapp.domain
+package com.example.movieapp.domain.repository
 
+import com.example.movieapp.domain.model.MovieCategory
+import com.example.movieapp.domain.repository.RepositoryResult
 import java.util.concurrent.ExecutorService
 
 interface Repository {

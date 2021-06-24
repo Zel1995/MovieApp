@@ -7,7 +7,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.movieapp.R
 import com.example.movieapp.databinding.FragmentMovieBinding
-import com.example.movieapp.domain.Movie
+import com.example.movieapp.domain.model.Movie
 
 private const val ARG_MOVIE = "MOVIE"
 

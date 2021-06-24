@@ -1,8 +1,8 @@
-package com.example.movieapp.domain.responses
+package com.example.movieapp.domain.network.model
 
 import com.google.gson.annotations.SerializedName
 
-data class MtdbResponse(
+data class TmdbResponse(
     @SerializedName("results")
     val results: List<Results>
 ) {

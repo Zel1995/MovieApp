@@ -4,5 +4,6 @@ import android.app.Application
 
 class App : Application() {
     val appComponent = DaggerAppComponent.builder()
-        .applicationModule(ApplicationModule(this)).build()
+        .applicationModule(ApplicationModule(this))
+        .build()
 }

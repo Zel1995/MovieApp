@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.movieapp.MainActivity
 import com.example.movieapp.R
 import com.example.movieapp.databinding.FragmentMovieListBinding
-import com.example.movieapp.domain.MovieRepositoryImpl
+import com.example.movieapp.domain.repository.MovieRetrofitRepositoryImpl
 import com.example.movieapp.domain.router.MainRouter
 import com.example.movieapp.domain.serviceRequest.CatchMovieService
 import com.example.movieapp.snack
@@ -99,7 +99,7 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list) {
 
 class MovieListViewModelFactory @Inject constructor(
     private val application: Application,
-    private val repository: MovieRepositoryImpl
+    private val repository: MovieRetrofitRepositoryImpl
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T =

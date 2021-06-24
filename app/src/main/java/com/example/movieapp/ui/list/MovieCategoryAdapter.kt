@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movieapp.R
-import com.example.movieapp.domain.Movie
-import com.example.movieapp.domain.MovieCategory
+import com.example.movieapp.domain.model.Movie
+import com.example.movieapp.domain.model.MovieCategory
 
 typealias ItemClicked = (movie: Movie) -> Unit?
 
