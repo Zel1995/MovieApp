@@ -10,5 +10,5 @@ interface Repository {
         callback: (result: RepositoryResult<List<MovieCategory>>) -> Unit
     )
 
-    fun getMovies(): RepositoryResult<List<MovieCategory>>
+    suspend fun getMovies(): RepositoryResult<List<MovieCategory>>
 }

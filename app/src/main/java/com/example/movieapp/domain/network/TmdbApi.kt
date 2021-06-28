@@ -13,4 +13,11 @@ interface TmdbApi {
         @Query("api_key") apiKey: String,
         @Query("language") language: String
     ): Call<TmdbResponse>
+
+    @GET("3/movie/{category}")
+    suspend fun getMoviesSuspend(
+        @Path("category") category: String,
+        @Query("api_key") apiKey: String,
+        @Query("language") language: String
+    ): TmdbResponse
 }

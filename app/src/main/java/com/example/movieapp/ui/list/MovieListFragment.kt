@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.movieapp.MainActivity
@@ -18,6 +19,10 @@ import com.example.movieapp.domain.repository.MovieRetrofitRepositoryImpl
 import com.example.movieapp.domain.router.MainRouter
 import com.example.movieapp.domain.serviceRequest.CatchMovieService
 import com.example.movieapp.snack
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MovieListFragment : Fragment(R.layout.fragment_movie_list) {
@@ -34,7 +39,7 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list) {
 
     @Inject
     lateinit var factory: MovieListViewModelFactory
-
+    private val mainScope = MainScope()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -64,17 +69,6 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list) {
             ViewModelProvider(requireActivity(), factory).get(
                 MovieListViewModel::class.java
             )
-        viewModel.movieLiveDada.observe(viewLifecycleOwner) {
-            adapter.setData(it)
-        }
-        viewModel.errorLiveDada.observe(viewLifecycleOwner) {
-            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-            adapter.clearData()
-        }
-        viewModel.loadingLiveDada.observe(viewLifecycleOwner) {
-            viewBinding?.progress?.visibility = if (it) View.VISIBLE else View.GONE
-        }
-
     }
 
     override fun onAttach(context: Context) {
@@ -84,10 +78,26 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list) {
 
     override fun onStart() {
         super.onStart()
+        collectDataFromViewModel()
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
             viewModel.MovieResultReceiver(),
             IntentFilter(CatchMovieService.SERVICE_ACTION)
         )
+    }
+
+    private fun collectDataFromViewModel() {
+        mainScope.launch {
+            viewModel.movie.collect {
+                adapter.setData(it)
+            }
+            viewModel.error.collect {
+                Toast.makeText(requireContext(), it?:"null", Toast.LENGTH_SHORT).show()
+                adapter.clearData()
+            }
+            viewModel.loading.collect {
+                viewBinding?.progress?.visibility = if (it) View.VISIBLE else View.GONE
+            }
+        }
     }
 
     override fun onStop() {

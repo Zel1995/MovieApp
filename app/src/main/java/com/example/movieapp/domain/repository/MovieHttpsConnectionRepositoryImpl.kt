@@ -45,7 +45,7 @@ object MovieHttpsConnectionRepositoryImpl : Repository {
         }
     }
 
-    override fun getMovies(): RepositoryResult<List<MovieCategory>> {
+    override suspend fun getMovies(): RepositoryResult<List<MovieCategory>> {
         try {
             val result = listOf(
                 loadMoviesCategory(CATEGORY_POPULAR),

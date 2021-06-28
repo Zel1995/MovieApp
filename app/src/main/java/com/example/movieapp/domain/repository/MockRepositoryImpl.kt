@@ -133,7 +133,7 @@ class MockRepositoryImpl : Repository {
 
     }
 
-    override fun getMovies(): RepositoryResult<List<MovieCategory>> {
+    override suspend fun getMovies(): RepositoryResult<List<MovieCategory>> {
         return Success(listOf())
     }
 }

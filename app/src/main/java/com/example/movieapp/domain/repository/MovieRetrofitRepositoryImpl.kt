@@ -17,7 +17,7 @@ class MovieRetrofitRepositoryImpl(private val tmdbApi: TmdbApi) : Repository {
         const val CATEGORY_POPULAR = "popular"
         const val CATEGORY_UPCOMING = "upcoming"
     }
-
+    @Deprecated("use getMovies with coroutines")
     override fun getMovies(
         executor: ExecutorService,
         callback: (result: RepositoryResult<List<MovieCategory>>) -> Unit
@@ -30,6 +30,7 @@ class MovieRetrofitRepositoryImpl(private val tmdbApi: TmdbApi) : Repository {
         addCategoryAndPost(CATEGORY_UPCOMING, categoryList, callback)
     }
 
+    @Deprecated("use getMovies with coroutines and getMoviesListByCategory()")
     private fun addCategoryAndPost(
         category: String,
         categoryList: MutableList<MovieCategory>,
@@ -73,10 +74,56 @@ class MovieRetrofitRepositoryImpl(private val tmdbApi: TmdbApi) : Repository {
     }
 
 
-    override fun getMovies(): RepositoryResult<List<MovieCategory>> {
-        TODO("Not yet implemented")
+    override suspend fun getMovies(): RepositoryResult<List<MovieCategory>> {
+        try {
+            val categoryList = listOf(
+                MovieCategory(
+                    CATEGORY_NOW_PLAYING,
+                    getMoviesListByCategory(CATEGORY_NOW_PLAYING)
+                ),
+
+                MovieCategory(
+                    CATEGORY_TOP_RATED,
+                    getMoviesListByCategory(CATEGORY_TOP_RATED)
+                ),
+
+                MovieCategory(
+                    CATEGORY_POPULAR,
+                    getMoviesListByCategory(CATEGORY_POPULAR)
+                ),
+
+                MovieCategory(
+                    CATEGORY_UPCOMING,
+                    getMoviesListByCategory(CATEGORY_UPCOMING)
+                ),
+            )
+            return Success(categoryList)
+        } catch (exc: Exception) {
+            return Error(exc)
+        }
     }
+
+    private suspend fun getMoviesListByCategory(category: String): List<Movie> {
+        val response =
+            tmdbApi.getMoviesSuspend(category, BuildConfig.TMDB_KEY, "ru")
+        val movieList = mutableListOf<Movie>()
+        response.results.forEach { result ->
+            movieList.add(
+                Movie(
+                    result.id,
+                    result.title,
+                    result.overview,
+                    result.posterPath,
+                    result.releaseDate,
+                    result.voteAverage
+                )
+            )
+        }
+        return movieList
+    }
+
 }
+
 sealed class RepositoryResult<T>
 data class Success<T>(val value: T) : RepositoryResult<T>()
 data class Error<T>(val value: Throwable) : RepositoryResult<T>()
