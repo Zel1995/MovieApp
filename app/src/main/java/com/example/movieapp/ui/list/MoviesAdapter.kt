@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.movieapp.R
-import com.example.movieapp.domain.Movie
+import com.example.movieapp.domain.model.Movie
 
 class MoviesAdapter(private val movies: List<Movie>, val itemClicked: (movie: Movie) -> Unit) :
     RecyclerView.Adapter<MoviesAdapter.MovieViewHolder>() {

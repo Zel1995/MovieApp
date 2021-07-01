@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movieapp.R
-import com.example.movieapp.domain.Movie
-import com.example.movieapp.domain.MovieCategory
+import com.example.movieapp.domain.model.Movie
+import com.example.movieapp.domain.model.MovieCategory
 
 typealias ItemClicked = (movie: Movie) -> Unit?
 
@@ -18,12 +18,12 @@ class MovieCategoryAdapter(private val itemClicked: ItemClicked) :
 
     private val data = mutableListOf<MovieCategory>()
     private val pool: RecyclerView.RecycledViewPool = RecyclerView.RecycledViewPool()
-    fun setData(dataForSet: List<MovieCategory>) {
+    fun setData(dataForSet: List<MovieCategory>?) {
         val callback = MovieDiffutilCallBack(data, dataForSet)
         val result = DiffUtil.calculateDiff(callback)
         data.apply {
             clear()
-            addAll(dataForSet)
+            addAll(dataForSet?: mutableListOf())
         }
         notifyDataSetChanged()
         result.dispatchUpdatesTo(this)
@@ -76,24 +76,25 @@ class MovieCategoryAdapter(private val itemClicked: ItemClicked) :
     }
 
     inner class MovieDiffutilCallBack(
-        val oldList: List<MovieCategory>,
-        val newList: List<MovieCategory>
+        val oldList: List<MovieCategory>?,
+        val newList: List<MovieCategory>?
     ) :
         DiffUtil.Callback() {
         override fun getOldListSize(): Int {
-            return oldList.size
+            return oldList?.size ?: 0
         }
 
         override fun getNewListSize(): Int {
-            return newList.size
+            return newList?.size ?: 0
         }
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList[oldItemPosition].name == newList[newItemPosition].name
+            return oldList?.get(oldItemPosition)?.name == newList?.get(newItemPosition)?.name
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList[oldItemPosition] == newList[newItemPosition]
+            return oldList?.get(oldItemPosition)  == newList?.get(newItemPosition)
         }
     }
+
 }

@@ -1,7 +1,9 @@
-package com.example.movieapp.domain
+package com.example.movieapp.domain.repository
 
 import android.os.Handler
 import android.os.Looper
+import com.example.movieapp.domain.model.Movie
+import com.example.movieapp.domain.model.MovieCategory
 import java.util.concurrent.ExecutorService
 import kotlin.random.Random
 
@@ -131,7 +133,7 @@ class MockRepositoryImpl : Repository {
 
     }
 
-    override fun getMovies(): RepositoryResult<List<MovieCategory>> {
+    override suspend fun getMovies(): RepositoryResult<List<MovieCategory>> {
         return Success(listOf())
     }
 }

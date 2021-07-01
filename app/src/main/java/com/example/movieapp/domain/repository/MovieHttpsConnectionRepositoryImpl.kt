@@ -1,18 +1,21 @@
-package com.example.movieapp.domain
+package com.example.movieapp.domain.repository
 
 import android.os.Handler
 import android.os.Looper
 import com.example.movieapp.BuildConfig
-import com.example.movieapp.domain.responses.MtdbResponse
+import com.example.movieapp.domain.model.Movie
+import com.example.movieapp.domain.model.MovieCategory
+import com.example.movieapp.domain.network.model.TmdbResponse
 import com.google.gson.Gson
 import java.net.URL
 import java.util.concurrent.ExecutorService
 import javax.net.ssl.HttpsURLConnection
+@Deprecated("repository for use https connection")
+object MovieHttpsConnectionRepositoryImpl : Repository {
 
-object MovieRepositoryImpl : Repository {
     private const val BASE_CATEGORY_URL =
-        "https://api.themoviedb.org/3/movie/%s?api_key=${BuildConfig.TMDB_KEY}&%s"
-    private const val REQUEST_LANGUAGE = "language=ru"
+        "https://api.themoviedb.org/3/movie/%s?api_key=${BuildConfig.TMDB_KEY}&language=%s"
+    private const val REQUEST_LANGUAGE = "ru"
     const val CATEGORY_POPULAR = "popular"
     const val CATEGORY_TOP_RATED = "top_rated"
     const val CATEGORY_NOW_PLAYING = "now_playing"
@@ -42,7 +45,7 @@ object MovieRepositoryImpl : Repository {
         }
     }
 
-    override fun getMovies(): RepositoryResult<List<MovieCategory>> {
+    override suspend fun getMovies(): RepositoryResult<List<MovieCategory>> {
         try {
             val result = listOf(
                 loadMoviesCategory(CATEGORY_POPULAR),
@@ -64,7 +67,7 @@ object MovieRepositoryImpl : Repository {
             requestMethod = "GET"
             readTimeout = 30_000
             val response =
-                gson.fromJson(this.inputStream.bufferedReader(), MtdbResponse::class.java)
+                gson.fromJson(this.inputStream.bufferedReader(), TmdbResponse::class.java)
 
             val moviesList = mutableListOf<Movie>()
             response.results.forEach { results ->
@@ -87,6 +90,3 @@ object MovieRepositoryImpl : Repository {
     }
 }
 
-sealed class RepositoryResult<T>
-data class Success<T>(val value: T) : RepositoryResult<T>()
-data class Error<T>(val value: Throwable) : RepositoryResult<T>()
