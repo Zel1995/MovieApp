@@ -31,35 +31,80 @@
                 android:id="@+id/movie_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:padding="@dimen/small_default_margin"
                 android:text="@string/hello"
-                android:textSize="24sp"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                android:textColor="@android:color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/movie_image"
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:scaleType="center"
-                android:src="@drawable/ic_launcher_background"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="@dimen/small_default_margin"
+                android:contentDescription="@string/movie"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerInside"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/movie_title"
-                android:contentDescription="@string/movie" />
+                tools:src="@drawable/ic_launcher_background" />
+
+            <TextView
+                android:id="@+id/realise_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/small_default_margin"
+                android:text="@string/movie"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toEndOf="@id/movie_image"
+                app:layout_constraintTop_toBottomOf="@id/movie_title" />
+
+
+            <TextView
+                android:id="@+id/rating_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/small_default_margin"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/ratingBar"
+                app:layout_constraintStart_toEndOf="@+id/ratingBar"
+                app:layout_constraintTop_toTopOf="@+id/ratingBar"
+                tools:text="10" />
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/small_default_margin"
+                android:layout_marginTop="@dimen/small_default_margin"
+                android:elevation="10dp"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:progressTint="@android:color/holo_orange_dark"
+                android:rating="2.3"
+                android:secondaryProgressTint="@android:color/holo_orange_light"
+                android:stepSize="0.1"
+                app:layout_constraintStart_toEndOf="@+id/movie_image"
+                app:layout_constraintTop_toBottomOf="@+id/realise_date" />
 
             <TextView
                 android:id="@+id/movie_content"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:layout_margin="@dimen/small_default_margin"
+                android:textAlignment="textStart"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="italic"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/movie_image"
                 tools:text="@string/tools_content" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 

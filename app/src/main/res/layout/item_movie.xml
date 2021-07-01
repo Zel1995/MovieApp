@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/movie_item_width"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/small_default_margin"
@@ -16,21 +17,23 @@
             android:id="@+id/title_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginStart="@dimen/small_default_margin"
             android:layout_marginTop="@dimen/small_default_margin"
             android:layout_marginEnd="@dimen/small_default_margin"
             android:text="@string/title"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            android:textColor="@android:color/darker_gray" />
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
         <ImageView
             android:id="@+id/img_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/small_default_margin"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher_foreground"
-            android:contentDescription="@string/movie" />
+            android:layout_gravity="center"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="@dimen/small_default_margin"
+            android:contentDescription="@string/movie"
+            tools:src="@drawable/ic_launcher_background" />
 
     </LinearLayout>
 

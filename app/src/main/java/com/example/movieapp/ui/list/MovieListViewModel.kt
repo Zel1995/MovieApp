@@ -1,13 +1,14 @@
 package com.example.movieapp.ui.list
 
 import android.app.Application
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.movieapp.domain.Error
-import com.example.movieapp.domain.MovieCategory
-import com.example.movieapp.domain.Repository
-import com.example.movieapp.domain.Success
+import com.example.movieapp.domain.*
+import com.example.movieapp.domain.serviceRequest.CatchMovieService
 import java.util.concurrent.Executors
 
 class MovieListViewModel(
@@ -40,6 +41,34 @@ class MovieListViewModel(
         }
     }
 
+    fun fetchServiceMovies() {
+        _loadingLiveDada.value = true
+        application.applicationContext.startService(
+            Intent(
+                application.applicationContext,
+                CatchMovieService::class.java
+            )
+        )
+        _loadingLiveDada.value = false
+    }
+
+    inner class MovieResultReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val result = mutableListOf<MovieCategory>()
+            result.apply {
+                intent?.getParcelableExtra<MovieCategory>(MovieRepositoryImpl.CATEGORY_POPULAR)
+                    ?.let { add(it) }
+                intent?.getParcelableExtra<MovieCategory>(MovieRepositoryImpl.CATEGORY_TOP_RATED)
+                    ?.let { add(it) }
+                intent?.getParcelableExtra<MovieCategory>(MovieRepositoryImpl.CATEGORY_NOW_PLAYING)
+                    ?.let { add(it) }
+                intent?.getParcelableExtra<MovieCategory>(MovieRepositoryImpl.CATEGORY_UPCOMING)
+                    ?.let { add(it) }
+            }
+            _movieLiveDada.value = result
+
+        }
+    }
 
     override fun onCleared() {
         super.onCleared()

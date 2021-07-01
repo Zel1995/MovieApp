@@ -7,4 +7,6 @@ interface Repository {
         executor: ExecutorService,
         callback: (result: RepositoryResult<List<MovieCategory>>) -> Unit
     )
+
+    fun getMovies(): RepositoryResult<List<MovieCategory>>
 }

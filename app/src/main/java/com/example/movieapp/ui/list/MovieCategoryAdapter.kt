@@ -13,7 +13,7 @@ import com.example.movieapp.domain.MovieCategory
 
 typealias ItemClicked = (movie: Movie) -> Unit?
 
-class MovieListAdapter(private val itemClicked: ItemClicked) :
+class MovieCategoryAdapter(private val itemClicked: ItemClicked) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val data = mutableListOf<MovieCategory>()
@@ -29,10 +29,15 @@ class MovieListAdapter(private val itemClicked: ItemClicked) :
         result.dispatchUpdatesTo(this)
     }
 
+    fun clearData() {
+        data.clear()
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): MovieListAdapter.MovieCategoryViewHolder =
+    ): MovieCategoryAdapter.MovieCategoryViewHolder =
         MovieCategoryViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_category, parent, false)
         )
@@ -44,18 +49,16 @@ class MovieListAdapter(private val itemClicked: ItemClicked) :
             title.text = item.name
             with(moviesList) {
                 setRecycledViewPool(pool)
-                val lm =
+                val linearLayoutManager =
                     LinearLayoutManager(moviesList.context, LinearLayoutManager.HORIZONTAL, false)
-                layoutManager = lm
+                layoutManager = linearLayoutManager
                 val moviesAdapter = MoviesAdapter(item.movies) { movie -> itemClicked(movie) }
                 adapter = moviesAdapter
                 addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
 
-                        lm.findLastVisibleItemPosition().takeIf { it != -1 }?.let {
-                            if ((moviesAdapter.itemCount - 4) <= it) {
-                            }
+                        linearLayoutManager.findLastVisibleItemPosition().takeIf { it != -1 }?.let {
                         }
                     }
                 })
@@ -86,11 +89,11 @@ class MovieListAdapter(private val itemClicked: ItemClicked) :
         }
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList.get(oldItemPosition).name == newList.get(newItemPosition).name
+            return oldList[oldItemPosition].name == newList[newItemPosition].name
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList.get(oldItemPosition) == newList.get(newItemPosition)
+            return oldList[oldItemPosition] == newList[newItemPosition]
         }
     }
 }

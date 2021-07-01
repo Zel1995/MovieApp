@@ -1,0 +1,17 @@
+package com.example.movieapp.ui
+
+import com.example.movieapp.MainActivity
+import com.example.movieapp.domain.router.RouterModule
+import com.example.movieapp.ui.list.MovieListFragment
+import dagger.Subcomponent
+
+@Subcomponent(modules = [RouterModule::class, MainActivityModule::class])
+interface MainSubcomponent {
+    @Subcomponent.Factory
+    interface Factory {
+        fun create(mainActivityModule: MainActivityModule): MainSubcomponent
+    }
+
+    fun inject(main: MainActivity)
+    fun inject(main: MovieListFragment)
+}
