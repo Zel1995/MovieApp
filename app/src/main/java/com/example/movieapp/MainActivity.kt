@@ -43,7 +43,8 @@ class MainActivity : AppCompatActivity(R.layout.main_activity),
                 Toast.makeText(applicationContext, resources.getString(hello), Toast.LENGTH_SHORT)
                     .show()
             }
-            R.id.rating -> {
+            R.id.history -> {
+                router.openHistoryFragment()
             }
         }
         return true

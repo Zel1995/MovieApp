@@ -5,32 +5,23 @@ import com.example.movieapp.domain.model.Movie
 import com.example.movieapp.domain.model.MovieCategory
 import com.example.movieapp.domain.network.TmdbApi
 import com.example.movieapp.domain.network.model.TmdbResponse
+import com.example.movieapp.storage.MovieDao
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.concurrent.ExecutorService
 
-class MovieRetrofitRepositoryImpl(private val tmdbApi: TmdbApi) : Repository {
+class MovieRetrofitRepositoryImpl(private val tmdbApi: TmdbApi, private val movieDao: MovieDao) :
+    Repository {
     companion object {
         const val CATEGORY_NOW_PLAYING = "now_playing"
         const val CATEGORY_TOP_RATED = "top_rated"
         const val CATEGORY_POPULAR = "popular"
         const val CATEGORY_UPCOMING = "upcoming"
+        const val LANGUAGE_RU = "ru"
     }
+
+
     @Deprecated("use getMovies with coroutines")
-    override fun getMovies(
-        executor: ExecutorService,
-        callback: (result: RepositoryResult<List<MovieCategory>>) -> Unit
-    ) {
-        val categoryList = mutableListOf<MovieCategory>()
-
-        addCategoryAndPost(CATEGORY_NOW_PLAYING, categoryList, callback)
-        addCategoryAndPost(CATEGORY_TOP_RATED, categoryList, callback)
-        addCategoryAndPost(CATEGORY_POPULAR, categoryList, callback)
-        addCategoryAndPost(CATEGORY_UPCOMING, categoryList, callback)
-    }
-
-    @Deprecated("use getMovies with coroutines and getMoviesListByCategory()")
     private fun addCategoryAndPost(
         category: String,
         categoryList: MutableList<MovieCategory>,
@@ -51,6 +42,7 @@ class MovieRetrofitRepositoryImpl(private val tmdbApi: TmdbApi) : Repository {
                                 movieList.add(
                                     Movie(
                                         result.id,
+                                        result.adult,
                                         result.title,
                                         result.overview,
                                         result.posterPath,
@@ -74,27 +66,27 @@ class MovieRetrofitRepositoryImpl(private val tmdbApi: TmdbApi) : Repository {
     }
 
 
-    override suspend fun getMovies(): RepositoryResult<List<MovieCategory>> {
+    override suspend fun getMovies(adults: Boolean): RepositoryResult<List<MovieCategory>> {
         try {
             val categoryList = listOf(
                 MovieCategory(
                     CATEGORY_NOW_PLAYING,
-                    getMoviesListByCategory(CATEGORY_NOW_PLAYING)
+                    getMoviesListByCategory(CATEGORY_NOW_PLAYING, adults)
                 ),
 
                 MovieCategory(
                     CATEGORY_TOP_RATED,
-                    getMoviesListByCategory(CATEGORY_TOP_RATED)
+                    getMoviesListByCategory(CATEGORY_TOP_RATED, adults)
                 ),
 
                 MovieCategory(
                     CATEGORY_POPULAR,
-                    getMoviesListByCategory(CATEGORY_POPULAR)
+                    getMoviesListByCategory(CATEGORY_POPULAR, adults)
                 ),
 
                 MovieCategory(
                     CATEGORY_UPCOMING,
-                    getMoviesListByCategory(CATEGORY_UPCOMING)
+                    getMoviesListByCategory(CATEGORY_UPCOMING, adults)
                 ),
             )
             return Success(categoryList)
@@ -103,21 +95,40 @@ class MovieRetrofitRepositoryImpl(private val tmdbApi: TmdbApi) : Repository {
         }
     }
 
-    private suspend fun getMoviesListByCategory(category: String): List<Movie> {
+    private suspend fun getMoviesListByCategory(category: String, adults: Boolean): List<Movie> {
         val response =
-            tmdbApi.getMoviesSuspend(category, BuildConfig.TMDB_KEY, "ru")
+            tmdbApi.getMoviesSuspend(category, BuildConfig.TMDB_KEY, LANGUAGE_RU)
         val movieList = mutableListOf<Movie>()
-        response.results.forEach { result ->
-            movieList.add(
-                Movie(
-                    result.id,
-                    result.title,
-                    result.overview,
-                    result.posterPath,
-                    result.releaseDate,
-                    result.voteAverage
+        if (adults) {
+            response.results.forEach { result ->
+                movieList.add(
+                    Movie(
+                        result.id,
+                        result.adult,
+                        result.title,
+                        result.overview,
+                        result.posterPath,
+                        result.releaseDate,
+                        result.voteAverage
+                    )
                 )
-            )
+            }
+        } else {
+            response.results.forEach { result ->
+                if (!result.adult) {
+                    movieList.add(
+                        Movie(
+                            result.id,
+                            result.adult,
+                            result.title,
+                            result.overview,
+                            result.posterPath,
+                            result.releaseDate,
+                            result.voteAverage
+                        )
+                    )
+                }
+            }
         }
         return movieList
     }

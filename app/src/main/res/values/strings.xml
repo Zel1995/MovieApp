@@ -14,4 +14,11 @@
     <string name="fab_clicked">Floating Action Button clicked</string>
     <string name="movie">Movie</string>
     <string name="release_date">Дата выхода:</string>
+    <string name="history_fragment">History</string>
+    <string name="history">History</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="add">add</string>
+    <string name="add_your_note">Add your note</string>
+    <string name="set_your_note">Set your note</string>
 </resources>

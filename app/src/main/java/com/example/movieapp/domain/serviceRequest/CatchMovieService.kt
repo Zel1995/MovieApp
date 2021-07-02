@@ -6,7 +6,7 @@ import com.example.movieapp.di.App
 import com.example.movieapp.domain.repository.MovieRetrofitRepositoryImpl
 import javax.inject.Inject
 
-class CatchMovieService : IntentService("CatchMovieService") {
+class CatchMovieService : IntentService(SERVICE_ACTION) {
 
     companion object {
         const val SERVICE_ACTION = "SERVICE_ACTION"

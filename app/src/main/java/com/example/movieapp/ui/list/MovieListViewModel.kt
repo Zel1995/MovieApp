@@ -4,63 +4,56 @@ import android.app.Application
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.movieapp.R
 import com.example.movieapp.domain.model.MovieCategory
 import com.example.movieapp.domain.repository.Error
 import com.example.movieapp.domain.repository.MovieHttpsConnectionRepositoryImpl
 import com.example.movieapp.domain.repository.Repository
 import com.example.movieapp.domain.repository.Success
 import com.example.movieapp.domain.serviceRequest.CatchMovieService
+import com.example.movieapp.domain.usecases.ChangeAdultsCategoryUseCases
+import com.example.movieapp.domain.usecases.FetchMoviesUseCase
+import com.example.movieapp.storage.MovieStorage
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.util.concurrent.Executors
 
 class MovieListViewModel(
     private val application: Application,
-    private val repository: Repository
+    private val fetchMoviesUseCase: FetchMoviesUseCase,
+    private val changeAdultsCategoryUseCases: ChangeAdultsCategoryUseCases
 ) : ViewModel() {
-    private val executor = Executors.newSingleThreadExecutor()
-
-    private val _movie = MutableStateFlow<List<MovieCategory>?>(null)
+    private val _movie = MutableStateFlow<List<MovieCategory>>(listOf())
     private val _loading = MutableStateFlow(false)
-    private val _error = MutableStateFlow<String?>(null)
+    private val _error = MutableSharedFlow<String>()
+    private val _modeIcon: MutableStateFlow<Int>
 
-    val movie: StateFlow<List<MovieCategory>?> = _movie
-    val loading: StateFlow<Boolean> = _loading
-    val error: StateFlow<String?> = _error
+    val movie: Flow<List<MovieCategory>> = _movie
+    val loading: Flow<Boolean> = _loading
+    val error: Flow<String> = _error
 
-    @Deprecated("use with coroutines method fetchMovies")
-    fun fetchMoviesWithCallback() {
-        _loading.value = true
-        repository.getMovies(executor) {
-            when (it) {
-                is Success -> {
-                    val result: List<MovieCategory> = it.value
-                    _movie.value = result
-                }
-                is Error -> {
-                    _error.value = it.value.stackTraceToString()
-                }
-            }
-            _loading.value = false
-        }
+    init {
+        val adultsMovie = changeAdultsCategoryUseCases.run()
+        val icon = if (adultsMovie) R.drawable.ic_done_all else R.drawable.ic__filter_alt
+        _modeIcon = MutableStateFlow(icon)
     }
+
+    val modeIcon: Flow<Int> = _modeIcon
 
     fun fetchMovies() {
         _loading.value = true
         viewModelScope.launch {
-            when (val result = repository.getMovies()) {
+            when (val result = fetchMoviesUseCase.run()) {
                 is Success -> {
                     val movies = result.value
                     _movie.value = movies
                 }
                 is Error -> {
-                    _error.value = result.value.stackTraceToString()
+                    _error.emit(result.value.stackTraceToString())
                 }
             }
         }
@@ -100,7 +93,12 @@ class MovieListViewModel(
     override fun onCleared() {
         super.onCleared()
         viewModelScope.cancel()
-        executor.shutdown()
+    }
+
+    fun switchAdultsCategory() {
+        val adultsMovie = changeAdultsCategoryUseCases.run()
+        val icon = if (adultsMovie) R.drawable.ic_done_all else R.drawable.ic__filter_alt
+        _modeIcon.value = icon
     }
 
 }

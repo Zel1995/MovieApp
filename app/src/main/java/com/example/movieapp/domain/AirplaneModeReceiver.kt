@@ -12,7 +12,6 @@ import androidx.core.app.NotificationCompat
 import com.example.movieapp.R
 
 class AirplaneModeReceiver : BroadcastReceiver() {
-    //CONNECTIVITY is Deprecated ,поэтому сделал с AIRPLANE MODE
     companion object {
         private const val CHANNEL_ID = "10"
     }

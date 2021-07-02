@@ -18,7 +18,7 @@ class MovieCategoryAdapter(private val itemClicked: ItemClicked) :
 
     private val data = mutableListOf<MovieCategory>()
     private val pool: RecyclerView.RecycledViewPool = RecyclerView.RecycledViewPool()
-    fun setData(dataForSet: List<MovieCategory>?) {
+    fun setData(dataForSet: List<MovieCategory>) {
         val callback = MovieDiffutilCallBack(data, dataForSet)
         val result = DiffUtil.calculateDiff(callback)
         data.apply {
@@ -76,24 +76,24 @@ class MovieCategoryAdapter(private val itemClicked: ItemClicked) :
     }
 
     inner class MovieDiffutilCallBack(
-        val oldList: List<MovieCategory>?,
-        val newList: List<MovieCategory>?
+        val oldList: List<MovieCategory>,
+        val newList: List<MovieCategory>
     ) :
         DiffUtil.Callback() {
         override fun getOldListSize(): Int {
-            return oldList?.size ?: 0
+            return oldList.size
         }
 
         override fun getNewListSize(): Int {
-            return newList?.size ?: 0
+            return newList.size
         }
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList?.get(oldItemPosition)?.name == newList?.get(newItemPosition)?.name
+            return oldList.get(oldItemPosition).name == newList.get(newItemPosition).name
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList?.get(oldItemPosition)  == newList?.get(newItemPosition)
+            return oldList.get(oldItemPosition)  == newList.get(newItemPosition)
         }
     }
 
