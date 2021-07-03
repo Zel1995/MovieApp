@@ -12,8 +12,10 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:menu="@menu/contacts_menu"
             app:title="@string/list_title" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -36,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:layout_margin="@dimen/default_margin"
+        android:layout_margin="@dimen/large_default_margin"
         android:src="@drawable/ic_done_all"
         app:backgroundTint="@color/purple_200"
         app:fabSize="normal" />

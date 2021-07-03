@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.example.movieapp.MainActivity
 import com.example.movieapp.R
 import com.example.movieapp.databinding.FragmentMovieBinding
 import com.example.movieapp.domain.model.Movie
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 private const val ARG_MOVIE = "MOVIE"
 
@@ -32,9 +34,10 @@ class MovieFragment : Fragment(R.layout.fragment_movie) {
     private var viewBinding: FragmentMovieBinding? = null
 
     private lateinit var moviesViewModel: MoviesViewModel
-    private lateinit var dataBase: MovieDataBase
-    private lateinit var moviesViewModelFactory: MoviesViewModelFactory
-    private lateinit var historyFactory: HistoryViewModelFactory
+    @Inject
+    lateinit var moviesViewModelFactory: MoviesViewModelFactory
+    @Inject
+    lateinit var historyFactory: HistoryViewModelFactory
     private lateinit var historyViewModel: HistoryViewModel
     val mainScope = MainScope()
 
@@ -58,18 +61,7 @@ class MovieFragment : Fragment(R.layout.fragment_movie) {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        dataBase = Room.databaseBuilder(
-            requireActivity().application,
-            MovieDataBase::class.java,
-            "MovieDataBase"
-        ).fallbackToDestructiveMigration().build()
-        historyFactory = HistoryViewModelFactory(
-            HistoryLocalRepositoryImpl(
-                dataBase.getMovieDao()
-            )
-        )
-        moviesViewModelFactory =
-            MoviesViewModelFactory(NoteLocalRepositoryImpl(dataBase.getNoteDao()))
+        (context as? MainActivity)?.mainSubcomponent?.inject(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -106,7 +98,8 @@ class MovieFragment : Fragment(R.layout.fragment_movie) {
                 movieDialogFragment.show(requireActivity().supportFragmentManager, "note dialog")
                 movieDialogFragment.addCallback {
                     viewBinding?.noteTv?.text = it
-                    moviesViewModel.addNote(NoteEntity(0, movie!!.id, it))
+                    val safeMovie = movie ?: return@addCallback
+                    moviesViewModel.addNote(NoteEntity(0, safeMovie.id, it))
                 }
                 return@setOnMenuItemClickListener true
             }

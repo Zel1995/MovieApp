@@ -13,6 +13,4 @@ import javax.inject.Singleton
 interface AppComponent {
     fun mainComponent(): MainSubcomponent.Factory
     fun inject(catchMovieService: CatchMovieService)
-    fun inject(historyFragment: HistoryFragment)
-    fun inject(movieFragment: MovieFragment)
 }

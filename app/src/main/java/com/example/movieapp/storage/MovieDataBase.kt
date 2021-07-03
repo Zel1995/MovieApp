@@ -3,7 +3,7 @@ package com.example.movieapp.storage
 import androidx.room.Database
 import androidx.room.RoomDatabase
 
-@Database(entities = [MovieEntity::class, NoteEntity::class], version = 2)
+@Database(entities = [MovieEntity::class, NoteEntity::class], version = 2,exportSchema = false)
 abstract class MovieDataBase : RoomDatabase() {
     abstract fun getMovieDao(): MovieDao
 
