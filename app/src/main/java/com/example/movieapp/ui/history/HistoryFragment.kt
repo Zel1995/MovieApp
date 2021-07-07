@@ -8,34 +8,31 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
+import com.example.movieapp.MainActivity
 import com.example.movieapp.R
 import com.example.movieapp.databinding.FragmentHistoryBinding
 import com.example.movieapp.domain.repository.HistoryLocalRepositoryImpl
 import com.example.movieapp.storage.MovieDataBase
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class HistoryFragment : Fragment(R.layout.fragment_history) {
+
 
     private lateinit var viewModel: HistoryViewModel
     private lateinit var viewBinding: FragmentHistoryBinding
     private val adapter = HistoryAdapter()
 
+    @Inject
     lateinit var factory: HistoryViewModelFactory
     private val mainScope = MainScope()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        factory = HistoryViewModelFactory(
-            HistoryLocalRepositoryImpl(
-                Room.databaseBuilder(
-                    requireActivity().application,
-                    MovieDataBase::class.java,
-                    "MovieDataBase"
-                ).fallbackToDestructiveMigration().build().getMovieDao()
-            )
-        )
+        (context as? MainActivity)?.mainSubcomponent?.inject(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,7 +52,9 @@ class HistoryFragment : Fragment(R.layout.fragment_history) {
         viewBinding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.delete_history -> {
-                    viewModel.deleteHistory()
+                    Snackbar.make(viewBinding.root,"Do you wanna clear history?",Snackbar.LENGTH_SHORT).setAction("Yes"){
+                        viewModel.deleteHistory()
+                    }
                     true
                 }
                 else -> {
@@ -70,7 +69,8 @@ class HistoryFragment : Fragment(R.layout.fragment_history) {
         viewModel = ViewModelProvider(requireActivity(), factory).get(HistoryViewModel::class.java)
         mainScope.launch {
             viewModel.history.collect {
-                adapter.setData(it)
+
+                adapter.setData(it.asReversed())
                 adapter.notifyDataSetChanged()
             }
         }
@@ -78,7 +78,7 @@ class HistoryFragment : Fragment(R.layout.fragment_history) {
 
     private fun initRecyclerView() {
         viewBinding.historyRv.layoutManager =
-            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, true)
+            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
         viewBinding.historyRv.adapter = adapter
     }
 }

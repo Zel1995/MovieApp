@@ -1,11 +1,15 @@
 package com.example.movieapp.ui.list
 
+import android.Manifest
 import android.app.Application
 import android.content.Context
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -18,6 +22,7 @@ import com.example.movieapp.domain.router.MainRouter
 import com.example.movieapp.domain.serviceRequest.CatchMovieService
 import com.example.movieapp.domain.usecases.ChangeAdultsCategoryUseCases
 import com.example.movieapp.domain.usecases.FetchMoviesUseCase
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -38,12 +43,22 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list) {
     @Inject
     lateinit var factory: MovieListViewModelFactory
 
+    private val permissionRequest =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (it) {
+                router.openContactsFragment()
+            } else {
+                Toast.makeText(requireContext(), "you disabled contacts", Toast.LENGTH_SHORT).show()
+            }
+        }
     private val mainScope = MainScope()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewBinding = FragmentMovieListBinding.bind(view)
         initRecyclerView()
         initViewModel()
+        initToolbarMenu()
         initFab()
         viewModel.fetchMovies()
         viewBinding?.swipeRefresh?.setOnRefreshListener {
@@ -51,6 +66,39 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list) {
             viewBinding?.swipeRefresh?.isRefreshing = false
         }
 
+    }
+
+    private fun initToolbarMenu() {
+        val safeBinding = viewBinding ?: return
+        safeBinding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.contacts_item -> {
+                    if (ContextCompat.checkSelfPermission(
+                            requireContext(),
+                            Manifest.permission.READ_CONTACTS
+                        ) == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        router.openContactsFragment()
+                    } else {
+                        if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
+                            Snackbar.make(
+                                safeBinding.root,
+                                "activate permission",
+                                Snackbar.LENGTH_INDEFINITE
+                            ).setAction("Activate") {
+                                permissionRequest.launch(Manifest.permission.READ_CONTACTS)
+                            }.show()
+                        } else {
+                            permissionRequest.launch(Manifest.permission.READ_CONTACTS)
+                        }
+                    }
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
+        }
     }
 
     private fun initFab() {
@@ -92,7 +140,11 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list) {
         }
         mainScope.launch {
             viewModel.loading.collect {
-                viewBinding?.progress?.visibility = if (it) View.VISIBLE else View.GONE
+                viewBinding?.progress?.visibility = if (it) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
             }
         }
         mainScope.launch {

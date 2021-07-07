@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="default_margin">16dp</dimen>
-    <dimen name="small_default_margin">8dp</dimen>
+    <dimen name="large_default_margin">16dp</dimen>
+    <dimen name="default_margin">8dp</dimen>
+    <dimen name="small_default_margin">4dp</dimen>
     <dimen name="movie_item_width">120dp</dimen>
+    <dimen name="contact_name_size">20sp</dimen>
 </resources>

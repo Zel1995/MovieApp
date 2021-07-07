@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/movie_item_width"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/small_default_margin"
+    android:layout_margin="@dimen/default_margin"
     app:cardCornerRadius="10dp"
     app:cardElevation="8dp">
 
@@ -18,9 +18,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="@dimen/small_default_margin"
-            android:layout_marginTop="@dimen/small_default_margin"
-            android:layout_marginEnd="@dimen/small_default_margin"
+            android:layout_marginStart="@dimen/default_margin"
+            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginEnd="@dimen/default_margin"
             android:text="@string/title"
             android:textColor="@android:color/black"
             android:textSize="14sp" />
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="4dp"
-            android:layout_marginBottom="@dimen/small_default_margin"
+            android:layout_marginBottom="@dimen/default_margin"
             android:contentDescription="@string/movie"
             tools:src="@drawable/ic_launcher_background" />
 
