@@ -18,6 +18,10 @@ class MovieRetrofitRepositoryImpl(private val tmdbApi: TmdbApi, private val movi
         const val CATEGORY_POPULAR = "popular"
         const val CATEGORY_UPCOMING = "upcoming"
         const val LANGUAGE_RU = "ru"
+        const val NOW_PLAYING_TITLE = "Сейчас в кино"
+        const val TOP_RATED_TITLE = "Топ рейтинг"
+        const val POPULAR_TITLE = "Популярные"
+        const val UPCOMING_TITLE = "Новинки"
     }
 
 
@@ -70,22 +74,22 @@ class MovieRetrofitRepositoryImpl(private val tmdbApi: TmdbApi, private val movi
         try {
             val categoryList = listOf(
                 MovieCategory(
-                    CATEGORY_NOW_PLAYING,
+                    NOW_PLAYING_TITLE,
                     getMoviesListByCategory(CATEGORY_NOW_PLAYING, adults)
                 ),
 
                 MovieCategory(
-                    CATEGORY_TOP_RATED,
+                    TOP_RATED_TITLE,
                     getMoviesListByCategory(CATEGORY_TOP_RATED, adults)
                 ),
 
                 MovieCategory(
-                    CATEGORY_POPULAR,
+                    POPULAR_TITLE,
                     getMoviesListByCategory(CATEGORY_POPULAR, adults)
                 ),
 
                 MovieCategory(
-                    CATEGORY_UPCOMING,
+                    UPCOMING_TITLE,
                     getMoviesListByCategory(CATEGORY_UPCOMING, adults)
                 ),
             )

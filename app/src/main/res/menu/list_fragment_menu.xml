@@ -7,4 +7,9 @@
         android:icon="@drawable/ic_contacts"
         android:title="@string/contacts"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/map_item"
+        android:title="@string/map"
+        android:icon="@drawable/ic_location"
+        app:showAsAction="ifRoom"/>
 </menu>

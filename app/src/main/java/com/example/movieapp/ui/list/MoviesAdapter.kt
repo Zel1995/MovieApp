@@ -31,9 +31,11 @@ class MoviesAdapter(private val movies: List<Movie>, val itemClicked: (movie: Mo
         val item = movies[position]
         with(holder) {
             title.text = item.title
+            rating.text = item.voteAverage.toString()
             Glide.with(imgIcon)
                 .load(BASE_IMAGE_URL + item.posterPath)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.movie_holder)
                 .fitCenter()
                 .error(R.drawable.ic_home)
                 .centerInside()
@@ -45,6 +47,7 @@ class MoviesAdapter(private val movies: List<Movie>, val itemClicked: (movie: Mo
 
     inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView = itemView.findViewById(R.id.title_item)
+        val rating:TextView = itemView.findViewById(R.id.rating_tv)
         val imgIcon: ImageView = itemView.findViewById(R.id.img_item)
 
         init {

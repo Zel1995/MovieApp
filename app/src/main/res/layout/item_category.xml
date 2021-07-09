@@ -17,6 +17,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/movies_list"
         android:layout_width="match_parent"
-        android:layout_height="210dp" />
+        android:layout_height="215dp" />
 
 </LinearLayout>
