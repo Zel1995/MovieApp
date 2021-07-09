@@ -12,12 +12,13 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/default_margin">
+        android:layout_height="wrap_content">
+
         <ImageView
             android:id="@+id/history_img"
             android:layout_width="40dp"
             android:layout_height="60dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/nachal" />
@@ -40,7 +41,7 @@
             android:textColor="@color/black"
             app:layout_constraintStart_toEndOf="@+id/history_img"
             app:layout_constraintTop_toBottomOf="@+id/history_date"
-            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginTop="@dimen/small_default_margin"
             android:layout_marginStart="@dimen/default_margin"
             android:layout_marginEnd="@dimen/default_margin"
             tools:text="@string/movie" />
