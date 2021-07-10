@@ -22,4 +22,9 @@
     <string name="add_your_note">Add your note</string>
     <string name="set_your_note">Set your note</string>
     <string name="contacts">Contacts</string>
+    <string name="clear_history">Do you wanna clear history?</string>
+    <string name="map">Map</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">longitude</string>
+    <string name="find_my_loc">Find my location</string>
 </resources>

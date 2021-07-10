@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -42,7 +43,14 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list) {
 
     @Inject
     lateinit var factory: MovieListViewModelFactory
-
+    private val locationPermissionRequest =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (it) {
+                router.openMapFragment()
+            } else {
+                Toast.makeText(requireContext(), "you disabled GPS", Toast.LENGTH_SHORT).show()
+            }
+        }
     private val permissionRequest =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) {
@@ -73,24 +81,23 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list) {
         safeBinding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.contacts_item -> {
-                    if (ContextCompat.checkSelfPermission(
-                            requireContext(),
-                            Manifest.permission.READ_CONTACTS
-                        ) == PackageManager.PERMISSION_GRANTED
+                    checkMyPermission(
+                        permissionRequest,
+                        Manifest.permission.READ_CONTACTS,
+                        safeBinding
                     ) {
                         router.openContactsFragment()
-                    } else {
-                        if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
-                            Snackbar.make(
-                                safeBinding.root,
-                                "activate permission",
-                                Snackbar.LENGTH_INDEFINITE
-                            ).setAction("Activate") {
-                                permissionRequest.launch(Manifest.permission.READ_CONTACTS)
-                            }.show()
-                        } else {
-                            permissionRequest.launch(Manifest.permission.READ_CONTACTS)
-                        }
+                    }
+                    true
+                }
+                R.id.map_item -> {
+
+                    checkMyPermission(
+                        locationPermissionRequest,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        safeBinding
+                    ) {
+                        router.openMapFragment()
                     }
                     true
                 }
@@ -99,6 +106,35 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list) {
                 }
             }
         }
+    }
+
+    private fun checkMyPermission(
+        permissionLauncher: ActivityResultLauncher<String>,
+        permission: String,
+        safeBinding: FragmentMovieListBinding,
+        onGranted: () -> Unit
+    ) {
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                permission
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                onGranted.invoke()
+            }
+            shouldShowRequestPermissionRationale(permission) -> {
+                Snackbar.make(
+                    safeBinding.root,
+                    "activate permission",
+                    Snackbar.LENGTH_INDEFINITE
+                ).setAction("Activate") {
+                    permissionLauncher.launch(permission)
+                }.show()
+            }
+            else -> {
+                permissionLauncher.launch(permission)
+            }
+        }
+
     }
 
     private fun initFab() {
