@@ -52,9 +52,9 @@ class HistoryFragment : Fragment(R.layout.fragment_history) {
         viewBinding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.delete_history -> {
-                    Snackbar.make(viewBinding.root,"Do you wanna clear history?",Snackbar.LENGTH_SHORT).setAction("Yes"){
+                    Snackbar.make(viewBinding.root,getString(R.string.clear_history),Snackbar.LENGTH_SHORT).setAction("Yes"){
                         viewModel.deleteHistory()
-                    }
+                    }.show()
                     true
                 }
                 else -> {

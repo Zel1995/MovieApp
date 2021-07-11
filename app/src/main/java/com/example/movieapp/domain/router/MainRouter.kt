@@ -7,6 +7,8 @@ import com.example.movieapp.ui.contacts.ContactsFragment
 import com.example.movieapp.ui.detils.MovieFragment
 import com.example.movieapp.ui.history.HistoryFragment
 import com.example.movieapp.ui.list.MovieListFragment
+import com.example.movieapp.ui.map.MapsFragment
+import com.google.android.gms.maps.MapFragment
 
 class MainRouter(private val supportFragmentManager: FragmentManager) {
     fun openMovieListFragment() {
@@ -29,5 +31,10 @@ class MainRouter(private val supportFragmentManager: FragmentManager) {
     fun openContactsFragment() {
         supportFragmentManager.beginTransaction().addToBackStack("contacts").replace(R.id.main_container, ContactsFragment())
             .commit()
+    }
+    fun openMapFragment(){
+        supportFragmentManager.beginTransaction().addToBackStack("map").replace(R.id.main_container, MapsFragment())
+            .commit()
+
     }
 }
